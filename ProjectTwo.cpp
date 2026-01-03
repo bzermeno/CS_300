@@ -3,7 +3,7 @@
  * or search for a specific course. The program will continue to run until 
  * the user chooses to exit.
  * Author: Beau Zermeno
- * Date: February 23, 2021
+ * Date: February 23, 2025
  */
 
 
@@ -187,4 +187,5 @@ int main() {
 		}
 	}
 }
+
 
