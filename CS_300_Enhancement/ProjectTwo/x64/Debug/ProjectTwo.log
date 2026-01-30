@@ -1,0 +1,11 @@
+﻿  CourseManager.cpp
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(44,10): error C2039: 'sort': is not a member of 'std'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\fstream(20,1):
+      see declaration of 'std'
+  
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(44,10): error C3861: 'sort': identifier not found
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(60,31): error C2065: 'sortedCourses': undeclared identifier
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(60,22): error C2530: 'course': references must be initialized
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(60,22): error C3531: 'course': a symbol whose type contains 'auto' must have an initializer
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(60,29): error C2143: syntax error: missing ';' before ':'
+C:\Users\bzerm\source\repos\ProjectTwo\CourseManager.cpp(60,44): error C2143: syntax error: missing ';' before ')'
