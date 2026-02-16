@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Two - Original Implementation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">CS 300 Portfolio</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="project-two.html" class="active">Project Two</a></li>
+                <li><a href="enhancement.html">Enhancement</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero">
+            <h1>Project Two: Course Planner System</h1>
+            <p class="subtitle">Original Implementation with Vector and QuickSort</p>
+        </header>
+
+        <section>
+            <h2>Overview</h2>
+            <p>Project Two is a C++ course management system demonstrating data structures and algorithm design principles. This is the original implementation showcasing fundamental programming concepts including file I/O, data structures, sorting algorithms, and interactive menu-driven interfaces.</p>
+            
+            <div class="details">
+                <p><strong>Technology Stack:</strong> C++, Standard Template Library (STL)</p>
+                <p><strong>Key Concepts:</strong> Data Structures (Vector), Sorting Algorithms (QuickSort), File I/O, String Manipulation</p>
+                <p><strong>Date:</strong> February 23, 2025</p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/bzermeno/CS_300" target="_blank">View Source Code</a></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>System Features</h2>
+            <p>The course planner provides a menu-driven interface with the following capabilities:</p>
+
+            <h3>1. Load Data Structure</h3>
+            <p>Reads course information from a CSV file and stores it in memory:</p>
+            <ul class="feature-list">
+                <li><strong>Course Number:</strong> Unique identifier for each course</li>
+                <li><strong>Course Name:</strong> Full title of the course</li>
+                <li><strong>Prerequisites:</strong> List of required courses (can be none)</li>
+            </ul>
+            <p>The system validates file access and provides error messages if the file cannot be opened.</p>
+
+            <h3>2. Print Course List</h3>
+            <p>Displays all courses in alphanumeric order:</p>
+            <ul>
+                <li>Automatically sorts courses before display</li>
+                <li>Shows course number and course name</li>
+                <li>Presents a clean, organized schedule view</li>
+            </ul>
+
+            <h3>3. Print Course</h3>
+            <p>Searches for and displays detailed information about a specific course:</p>
+            <ul>
+                <li>Case-insensitive search functionality</li>
+                <li>Displays course number, name, and prerequisites</li>
+                <li>Handles courses with no prerequisites</li>
+                <li>Provides error message if course is not found</li>
+            </ul>
+
+            <h3>4. Exit</h3>
+            <p>Gracefully terminates the program with a thank you message.</p>
+        </section>
+
+        <section>
+            <h2>Data Structure Design</h2>
+            
+            <h3>Course Structure</h3>
+            <p>The system uses a custom struct to represent course data:</p>
+            <pre><code>struct Course {
+    string courseNumber;
+    string courseName;
+    vector&lt;string&gt; prerequisites;
+};</code></pre>
+            <p>This structure efficiently encapsulates all course-related information in a single, organized unit.</p>
+
+            <h3>Vector Storage</h3>
+            <p>Courses are stored in a vector container for several advantages:</p>
+            <ul class="feature-list">
+                <li><strong>Sequential Access:</strong> Efficient iteration through all courses</li>
+                <li><strong>Dynamic Sizing:</strong> Automatically grows to accommodate any number of courses</li>
+                <li><strong>Cache Friendly:</strong> Contiguous memory allocation improves performance</li>
+                <li><strong>Random Access:</strong> Direct index-based access when needed</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Algorithm Implementation</h2>
+            
+            <h3>QuickSort Algorithm</h3>
+            <p>The program implements QuickSort for efficient course sorting:</p>
+            <pre><code>void quickSort(vector&lt;Course&gt;& courses, int left, int right) {
+    int i = left, j = right;
+    Course tmp;
+    string pivot = courses[(left + right) / 2].courseNumber;
+    
+    // Partition
+    while (i &lt;= j) {
+        while (courses[i].courseNumber &lt; pivot)
+            i++;
+        while (courses[j].courseNumber &gt; pivot)
+            j--;
+        if (i &lt;= j) {
+            tmp = courses[i];
+            courses[i] = courses[j];
+            courses[j] = tmp;
+            i++;
+            j--;
+        }
+    }
+
+    // Recursion
+    if (left &lt; j)
+        quickSort(courses, left, j);
+    if (i &lt; right)
+        quickSort(courses, i, right);
+}</code></pre>
+            
+            <h3>Algorithm Analysis</h3>
+            <ul class="feature-list">
+                <li><strong>Time Complexity:</strong> O(n log n) average case, O(n²) worst case</li>
+                <li><strong>Space Complexity:</strong> O(log n) for recursion stack</li>
+                <li><strong>In-place Sorting:</strong> Minimal additional memory usage</li>
+                <li><strong>Unstable Sort:</strong> Equal elements may be reordered</li>
+            </ul>
+            <p>QuickSort was chosen for its excellent average-case performance and efficiency with the vector data structure.</p>
+
+            <h3>Search Algorithm</h3>
+            <p>Linear search is used for course lookup:</p>
+            <ul class="feature-list">
+                <li><strong>Time Complexity:</strong> O(n) in worst case</li>
+                <li><strong>Simple Implementation:</strong> Easy to understand and maintain</li>
+                <li><strong>Case Insensitive:</strong> Converts search term to uppercase</li>
+                <li><strong>First Match:</strong> Returns immediately upon finding course</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>File Parsing Implementation</h2>
+            <p>The program reads and parses CSV data with robust error handling:</p>
+            
+            <h3>CSV Format</h3>
+            <p>Expected file format: <code>CourseNumber,CourseName,Prerequisite1,Prerequisite2,...</code></p>
+            <p>Example:</p>
+            <pre><code>CSCI100,Introduction to Computer Science
+CSCI101,Introduction to Programming in C++,CSCI100
+CSCI200,Data Structures,CSCI101
+MATH201,Discrete Mathematics</code></pre>
+
+            <h3>Parsing Logic</h3>
+            <pre><code>void readFile(string filename, vector&lt;Course&gt;& courses) {
+    ifstream file(filename);
+    if (!file) {
+        cout &lt;&lt; "Error opening file." &lt;&lt; endl &lt;&lt; endl;
+        return;
+    }
+    string line;
+    while (getline(file, line)) {
+        Course course;
+        string prereq;
+        int pos = 0;
+        pos = line.find(",");
+        course.courseNumber = line.substr(0, pos);
+        line.erase(0, pos + 1);
+        pos = line.find(",");
+        course.courseName = line.substr(0, pos);
+        line.erase(0, pos + 1);
+        while ((pos = line.find(",")) != string::npos) {
+            prereq = line.substr(0, pos);
+            course.prerequisites.push_back(prereq);
+            line.erase(0, pos + 1);
+        }
+        course.prerequisites.push_back(line);
+        courses.push_back(course);
+    }
+    cout &lt;&lt; "Data loaded successfully." &lt;&lt; endl &lt;&lt; endl;
+    file.close();
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>User Interface</h2>
+            <p>The program provides a clean, text-based menu interface:</p>
+            
+            <h3>Menu Display</h3>
+            <pre><code>Welcome to the course planner.
+
+    1. Load Data Structure.
+    2. Print Course List.
+    3. Print Course.
+    9. Exit
+
+What would you like to do?</code></pre>
+
+            <h3>Sample Output - Print Course List</h3>
+            <pre><code>Here is a sample schedule:
+
+CSCI100, Introduction to Computer Science
+CSCI101, Introduction to Programming in C++
+CSCI200, Data Structures
+MATH201, Discrete Mathematics</code></pre>
+
+            <h3>Sample Output - Print Course</h3>
+            <pre><code>What course do you want to know about? CSCI200
+CSCI200, Data Structures
+Prerequisites: CSCI101</code></pre>
+        </section>
+
+        <section>
+            <h2>Technical Implementation Details</h2>
+
+            <h3>String Manipulation</h3>
+            <ul class="feature-list">
+                <li><strong>find():</strong> Locates delimiter positions in CSV data</li>
+                <li><strong>substr():</strong> Extracts field values from strings</li>
+                <li><strong>erase():</strong> Removes processed data from string</li>
+                <li><strong>transform():</strong> Converts user input to uppercase for search</li>
+            </ul>
+
+            <h3>Error Handling</h3>
+            <ul>
+                <li>File access validation before reading</li>
+                <li>Clear error messages for user guidance</li>
+                <li>Invalid menu option handling</li>
+                <li>Course not found messaging</li>
+            </ul>
+
+            <h3>Code Organization</h3>
+            <ul>
+                <li>Separate functions for each major operation</li>
+                <li>Clear function documentation with comments</li>
+                <li>Single responsibility for each function</li>
+                <li>Main function handles program flow and user interaction</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Code Structure</h2>
+            <div class="architecture-diagram">
+ProjectTwo.cpp
+│
+├── Includes & Namespace
+│   ├── iostream (console I/O)
+│   ├── string (string manipulation)
+│   ├── vector (dynamic array)
+│   ├── fstream (file operations)
+│   └── algorithm (transform for uppercase)
+│
+├── Data Structure
+│   └── struct Course
+│       ├── courseNumber
+│       ├── courseName
+│       └── prerequisites (vector)
+│
+├── Functions
+│   ├── readFile() - Parse CSV and populate vector
+│   ├── printCourses() - Display sorted course list
+│   ├── quickSort() - Sort courses by number
+│   └── courseSearch() - Find and display course details
+│
+└── main()
+    ├── Variable initialization
+    ├── Welcome message
+    └── Menu loop
+        ├── Display options
+        ├── Get user choice
+        └── Execute corresponding function
+            </div>
+        </section>
+
+        <section>
+            <h2>Performance Characteristics</h2>
+            
+            <h3>Time Complexity Analysis</h3>
+            <ul class="feature-list">
+                <li><strong>Load Data:</strong> O(n) - Linear scan of file</li>
+                <li><strong>Sort Courses:</strong> O(n log n) - QuickSort average case</li>
+                <li><strong>Search Course:</strong> O(n) - Linear search</li>
+                <li><strong>Print Courses:</strong> O(n) - Iterate through all courses</li>
+            </ul>
+
+            <h3>Space Complexity</h3>
+            <ul class="feature-list">
+                <li><strong>Vector Storage:</strong> O(n) - Stores all course data</li>
+                <li><strong>QuickSort:</strong> O(log n) - Recursion stack depth</li>
+                <li><strong>Auxiliary Space:</strong> O(1) - Fixed additional variables</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Strengths and Limitations</h2>
+            
+            <h3>Strengths</h3>
+            <ul>
+                <li>Simple, straightforward implementation</li>
+                <li>Efficient sorting with QuickSort</li>
+                <li>Clear, understandable code structure</li>
+                <li>Handles courses with multiple prerequisites</li>
+                <li>User-friendly interface</li>
+            </ul>
+
+            <h3>Limitations</h3>
+            <ul>
+                <li>All code in a single file (limited modularity)</li>
+                <li>No data persistence between sessions</li>
+                <li>Linear search could be optimized with binary search after sorting</li>
+                <li>Limited error handling for malformed CSV data</li>
+                <li>Global namespace usage with "using namespace std"</li>
+            </ul>
+
+            <p>These limitations were addressed in the enhanced version. See the <a href="enhancement.html">Enhancement page</a> for details.</p>
+        </section>
+
+        <section>
+            <h2>Key Learning Outcomes</h2>
+            <ul>
+                <li><strong>Data Structure Selection:</strong> Understanding when to use vectors vs other containers</li>
+                <li><strong>Algorithm Implementation:</strong> Implementing and analyzing sorting algorithms</li>
+                <li><strong>File I/O:</strong> Reading and parsing structured data files</li>
+                <li><strong>String Processing:</strong> Manipulating strings for data extraction</li>
+                <li><strong>User Interaction:</strong> Creating intuitive menu-driven interfaces</li>
+                <li><strong>Code Documentation:</strong> Writing clear comments and function descriptions</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <p>This original implementation served as the foundation for the enhanced version. To see how this project evolved with improved software architecture and modern C++ practices, visit the <a href="enhancement.html">Enhancement page</a>.</p>
+            <a href="enhancement.html" class="btn">View Enhancement</a>
+            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        </section>
+    </main>
+    
+</body>
+</html>
