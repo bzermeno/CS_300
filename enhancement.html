@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 300 Enhancement - Object-Oriented Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">CS 300 Portfolio</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="project-two.html">Project Two</a></li>
+                <li><a href="enhancement.html" class="active">Enhancement</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero">
+            <h1>CS 300 Enhancement: Improved Architecture</h1>
+            <p class="subtitle">Modern C++ with Object-Oriented Design and Separation of Concerns</p>
+        </header>
+
+        <section>
+            <h2>Enhancement Overview</h2>
+            <p>Building upon the solid foundation of Project Two, this enhancement transforms the course planner into a more maintainable and professional application by introducing object-oriented design principles, separation of concerns, and modern C++ practices. The enhancement demonstrates how to refactor code for better organization, reusability, and extensibility.</p>
+            
+            <div class="details">
+                <p><strong>Technology Stack:</strong> C++, STL Algorithms, Object-Oriented Programming</p>
+                <p><strong>New Concepts:</strong> Classes, Encapsulation, Header Files, Const-Correctness, Lambda Functions</p>
+                <p><strong>Date:</strong> January 26, 2026</p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/bzermeno/CS_300/tree/main/CS_300_Enhancement" target="_blank">View Source Code</a></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>What Changed?</h2>
+            <p>The enhancement introduces significant architectural improvements while preserving the original functionality:</p>
+
+            <h3>Before (Project Two)</h3>
+            <ul>
+                <li>Single file (ProjectTwo.cpp)</li>
+                <li>Global functions</li>
+                <li>Manual QuickSort implementation</li>
+                <li>Using namespace std</li>
+                <li>All logic in one place</li>
+            </ul>
+
+            <h3>After (Enhancement)</h3>
+            <ul>
+                <li>Modular design (multiple files)</li>
+                <li>CourseManager class encapsulation</li>
+                <li>STL sort algorithm with lambda</li>
+                <li>Explicit std:: namespace usage</li>
+                <li>Separation of concerns</li>
+                <li>Const-correctness</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Object-Oriented Architecture</h2>
+            <p>The enhancement implements a professional class-based architecture:</p>
+
+            <div class="architecture-diagram">
+┌─────────────────────────────────────────┐
+│    CS_300_Enhancement.cpp (Main)        │
+│  - Program entry point                  │
+│  - User interface handling              │
+│  - Menu display and input               │
+│  - Creates CourseManager instance       │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│    CourseManager.h (Interface)          │
+│  - CourseManager class declaration      │
+│  - Course struct definition             │
+│  - Public method declarations           │
+│  - Private member variables             │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│    CourseManager.cpp (Implementation)   │
+│  - readFile() implementation            │
+│  - printCourses() implementation        │
+│  - courseSearch() implementation        │
+│  - Private course vector                │
+└─────────────────────────────────────────┘
+            </div>
+        </section>
+
+        <section>
+            <h2>CourseManager Class</h2>
+            <p>The new CourseManager class encapsulates all course management functionality:</p>
+
+            <h3>Class Definition (CourseManager.h)</h3>
+            <pre><code>#ifndef COURSE_MANAGER_H
+#define COURSE_MANAGER_H
+
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+struct Course {
+    std::string courseNumber;
+    std::string courseName;
+    std::vector&lt;std::string&gt; prerequisites;
+};
+
+class CourseManager {
+private:
+    std::vector&lt;Course&gt; courses;
+
+public:
+    void readFile(const std::string& filename);
+    void printCourses() const;
+    void courseSearch(const std::string& courseNumber) const;
+};
+
+#endif // COURSE_MANAGER_H</code></pre>
+
+            <h3>Key Improvements</h3>
+            <ul class="feature-list">
+                <li><strong>Encapsulation:</strong> Course data is private to the class</li>
+                <li><strong>Clear Interface:</strong> Public methods define how to interact with courses</li>
+                <li><strong>Const-Correctness:</strong> Read-only methods marked as const</li>
+                <li><strong>Include Guards:</strong> Prevents multiple inclusion problems</li>
+                <li><strong>Explicit Namespace:</strong> Uses std:: instead of "using namespace std"</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Enhanced Implementation</h2>
+
+            <h3>Improved File Reading</h3>
+            <p>The readFile method now includes automatic sorting and better validation:</p>
+            <pre><code>void CourseManager::readFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cout &lt;&lt; "Error opening file.\\n\\n";
+        return;
+    }
+
+    courses.clear();  // Clear existing data
+
+    std::string line;
+    while (getline(file, line)) {
+        Course course;
+
+        size_t pos = line.find(',');
+        course.courseNumber = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        pos = line.find(',');
+        course.courseName = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        while ((pos = line.find(',')) != std::string::npos) {
+            course.prerequisites.push_back(line.substr(0, pos));
+            line.erase(0, pos + 1);
+        }
+
+        if (!line.empty()) {
+            course.prerequisites.push_back(line);
+        }
+
+        courses.push_back(course);
+    }
+
+    std::cout &lt;&lt; "Data loaded successfully.\\n\\n";
+
+    // Sort courses once loaded using STL algorithm
+    std::sort(courses.begin(), courses.end(),
+        [](const Course& a, const Course& b) {
+            return a.courseNumber &lt; b.courseNumber;
+        });
+}</code></pre>
+
+            <h3>Key Changes</h3>
+            <ul class="feature-list">
+                <li><strong>Clear Before Load:</strong> Safely handles multiple file loads</li>
+                <li><strong>Empty Check:</strong> Prevents adding empty prerequisites</li>
+                <li><strong>Automatic Sorting:</strong> Sorts once during load instead of each print</li>
+                <li><strong>STL Algorithm:</strong> Uses std::sort with lambda comparator</li>
+                <li><strong>size_t:</strong> Proper type for string positions</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Modern C++ Practices</h2>
+
+            <h3>1. Lambda Functions</h3>
+            <p>Uses lambda expressions for inline comparison logic:</p>
+            <pre><code>std::sort(courses.begin(), courses.end(),
+    [](const Course& a, const Course& b) {
+        return a.courseNumber &lt; b.courseNumber;
+    });</code></pre>
+            <p>This eliminates the need for a separate 100-line QuickSort implementation.</p>
+
+            <h3>2. Const-Correctness</h3>
+            <p>Methods that don't modify state are marked const:</p>
+            <pre><code>void printCourses() const;
+void courseSearch(const std::string& courseNumber) const;</code></pre>
+            <p>This enables compiler optimizations and prevents accidental modifications.</p>
+
+            <h3>3. Range-Based For Loops</h3>
+            <p>Cleaner iteration over collections:</p>
+            <pre><code>for (const auto& course : courses) {
+    std::cout &lt;&lt; course.courseNumber &lt;&lt; ", "
+              &lt;&lt; course.courseName &lt;&lt; std::endl;
+}</code></pre>
+
+            <h3>4. Improved Error Handling</h3>
+            <p>Better validation and user-friendly error messages:</p>
+            <pre><code>if (courses.empty()) {
+    std::cout &lt;&lt; "Course data not loaded.\\n\\n";
+    return;
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>Enhanced Course Search</h2>
+            <p>The search implementation is cleaner and more robust:</p>
+            <pre><code>void CourseManager::courseSearch(const std::string& courseNumber) const {
+    if (courses.empty()) {
+        std::cout &lt;&lt; "Course data not loaded.\\n\\n";
+        return;
+    }
+
+    for (const auto& course : courses) {
+        if (course.courseNumber == courseNumber) {
+            std::cout &lt;&lt; course.courseNumber &lt;&lt; ", "
+                      &lt;&lt; course.courseName &lt;&lt; '\\n';
+
+            if (course.prerequisites.empty()) {
+                std::cout &lt;&lt; "Prerequisites: None\\n\\n";
+            }
+            else {
+                std::cout &lt;&lt; "Prerequisites: ";
+                for (size_t i = 0; i &lt; course.prerequisites.size(); ++i) {
+                    if (i &gt; 0) std::cout &lt;&lt; ", ";
+                    std::cout &lt;&lt; course.prerequisites[i];
+                }
+                std::cout &lt;&lt; "\\n\\n";
+            }
+            return;
+        }
+    }
+
+    std::cout &lt;&lt; "Course not found.\\n\\n";
+}</code></pre>
+
+            <h3>Improvements</h3>
+            <ul>
+                <li>Checks if data is loaded before searching</li>
+                <li>Uses empty() instead of checking string length</li>
+                <li>Cleaner prerequisite formatting logic</li>
+                <li>More readable with explicit loop indexing</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Separation of Concerns</h2>
+            <p>The enhanced architecture separates responsibilities:</p>
+
+            <h3>Main Program (CS_300_Enhancement.cpp)</h3>
+            <ul class="feature-list">
+                <li><strong>Responsibility:</strong> User interface and program flow</li>
+                <li><strong>Does:</strong> Display menus, get input, call CourseManager methods</li>
+                <li><strong>Doesn't Do:</strong> File parsing, data storage, course management</li>
+            </ul>
+
+            <h3>CourseManager Class</h3>
+            <ul class="feature-list">
+                <li><strong>Responsibility:</strong> Course data management</li>
+                <li><strong>Does:</strong> Load files, store courses, search and display courses</li>
+                <li><strong>Doesn't Do:</strong> User interaction, menu display</li>
+            </ul>
+
+            <h3>Benefits</h3>
+            <ul>
+                <li>Easy to modify user interface without touching course logic</li>
+                <li>CourseManager can be reused in other programs</li>
+                <li>Testing individual components is simpler</li>
+                <li>Multiple developers can work on different parts</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Project Structure</h2>
+            <div class="architecture-diagram">
+CS_300_Enhancement/
+├── CS_300_Enhancement.cpp    # Main program
+├── CourseManager.h           # Class interface
+├── CourseManager.cpp         # Class implementation
+├── courses.csv              # Sample data file
+├── CS_300_Enhancement.sln   # Visual Studio solution
+├── ProjectTwo.vcxproj       # Visual Studio project
+└── x64/                     # Build output
+            </div>
+        </section>
+
+        <section>
+            <h2>Technical Improvements Summary</h2>
+
+            <h3>Code Quality</h3>
+            <ul class="feature-list">
+                <li><strong>Modularity:</strong> Separated interface from implementation</li>
+                <li><strong>Reusability:</strong> CourseManager can be used in other projects</li>
+                <li><strong>Maintainability:</strong> Changes localized to specific files</li>
+                <li><strong>Readability:</strong> Clear class structure and method names</li>
+            </ul>
+
+            <h3>Performance</h3>
+            <ul class="feature-list">
+                <li><strong>Sort Once:</strong> Courses sorted during load, not every print</li>
+                <li><strong>Optimized STL:</strong> std::sort is highly optimized</li>
+                <li><strong>Pass by Reference:</strong> Const references avoid unnecessary copies</li>
+                <li><strong>Early Returns:</strong> Validates data existence before processing</li>
+            </ul>
+
+            <h3>Best Practices</h3>
+            <ul class="feature-list">
+                <li><strong>Header Guards:</strong> Prevents multiple inclusion issues</li>
+                <li><strong>Const-Correctness:</strong> Indicates methods that don't modify state</li>
+                <li><strong>Clear() Before Load:</strong> Handles multiple file loads safely</li>
+                <li><strong>Explicit Namespace:</strong> Avoids namespace pollution</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Algorithm Comparison</h2>
+
+            <h3>QuickSort (Original)</h3>
+            <pre><code>// ~100 lines of manual implementation
+void quickSort(vector&lt;Course&gt;& courses, int left, int right) {
+    // Partition logic
+    // Recursive calls
+    // Manual swapping
+}</code></pre>
+            <ul>
+                <li>Complex implementation</li>
+                <li>More code to maintain</li>
+                <li>Potential for bugs</li>
+                <li>Called before every print</li>
+            </ul>
+
+            <h3>STL Sort (Enhanced)</h3>
+            <pre><code>// 3 lines with lambda
+std::sort(courses.begin(), courses.end(),
+    [](const Course& a, const Course& b) {
+        return a.courseNumber &lt; b.courseNumber;
+    });</code></pre>
+            <ul>
+                <li>Simple, clear code</li>
+                <li>Highly optimized implementation</li>
+                <li>Industry-standard approach</li>
+                <li>Called once during load</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Enhanced User Experience</h2>
+            
+            <h3>Data Validation</h3>
+            <pre><code>What would you like to do? 2
+Course data not loaded.
+
+What would you like to do? 1
+What file do you want to load? courses.csv
+Data loaded successfully.</code></pre>
+            <p>The system now validates that data is loaded before attempting operations.</p>
+
+            <h3>Improved Output</h3>
+            <p>Uses consistent newline character '\\n' instead of endl for better performance.</p>
+        </section>
+
+        <section>
+            <h2>Lessons Learned</h2>
+
+            <h3>Object-Oriented Design</h3>
+            <p>Encapsulating related data and functionality in classes makes code more organized and reusable. The CourseManager class provides a clear interface while hiding implementation details.</p>
+
+            <h3>Separation of Concerns</h3>
+            <p>Separating user interface from business logic makes both easier to modify and test. The main program doesn't need to know how courses are stored or sorted.</p>
+
+            <h3>Modern C++ Features</h3>
+            <p>Using STL algorithms and lambda functions results in more concise, readable, and maintainable code. The standard library provides well-tested, optimized implementations.</p>
+
+            <h3>Header Files</h3>
+            <p>Separating interface (header) from implementation (cpp file) is a fundamental C++ practice that enables separate compilation and clearer code organization.</p>
+        </section>
+
+        <section>
+            <h2>Future Enhancements</h2>
+            <p>The improved architecture enables future extensions:</p>
+            <ul>
+                <li>Add binary search for O(log n) course lookup (since data is sorted)</li>
+                <li>Implement file saving functionality</li>
+                <li>Add course validation (check prerequisites exist)</li>
+                <li>Create a GUI interface using the same CourseManager</li>
+                <li>Add course editing capabilities</li>
+                <li>Implement graph algorithms for prerequisite chains</li>
+                <li>Support multiple data formats (JSON, XML)</li>
+                <li>Add unit tests for CourseManager class</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Comparison Summary</h2>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <tr style="background-color: #f8f9fa;">
+                    <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: left;">Aspect</th>
+                    <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: left;">Project Two</th>
+                    <th style="padding: 0.75rem; border: 1px solid #dee2e6; text-align: left;">Enhancement</th>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Files</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">1 file</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">3 files (main, .h, .cpp)</td>
+                </tr>
+                <tr style="background-color: #f8f9fa;">
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Architecture</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Procedural</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Object-Oriented</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Sorting</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Manual QuickSort (~100 lines)</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">STL sort with lambda (3 lines)</td>
+                </tr>
+                <tr style="background-color: #f8f9fa;">
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>When Sorted</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Before each print</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Once during load</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Data Access</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Global vector</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Private class member</td>
+                </tr>
+                <tr style="background-color: #f8f9fa;">
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Namespace</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">using namespace std</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Explicit std::</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Validation</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Basic</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Enhanced with state checks</td>
+                </tr>
+                <tr style="background-color: #f8f9fa;">
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Reusability</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">Limited</td>
+                    <td style="padding: 0.75rem; border: 1px solid #dee2e6;">High - CourseManager is reusable</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>This enhancement demonstrates the evolution from procedural to object-oriented programming. While both versions accomplish the same core functionality, the enhanced version showcases professional software engineering practices that make the code more maintainable, extensible, and reusable. The improvements in code organization, use of modern C++ features, and separation of concerns represent the kind of refactoring that occurs in real-world software development as systems mature and requirements evolve.</p>
+        </section>
+
+        <section>
+            <h2>Comparison</h2>
+            <p>To see the original implementation that served as the foundation for this enhancement, visit the <a href="project-two.html">Project Two page</a>.</p>
+            <a href="project-two.html" class="btn">View Project Two</a>
+            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        </section>
+    </main>
+
+</body>
+</html>
